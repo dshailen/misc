@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-health-check
+  namespace: kube-system
+  labels:
+    app: node-health
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: node-health
+  template:
+    metadata:
+      labels:
+        app: node-health
+    spec:
+      hostNetwork: true
+      serviceAccountName: aci-containers-host-agent
+      tolerations:
+        - operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: node-health-check
+          image: nginx
